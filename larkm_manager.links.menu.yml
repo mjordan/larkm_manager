@@ -1,0 +1,6 @@
+system.lark_manager_settings:
+  title: 'larkm Manager'
+  parent: system.admin_config_search
+  route_name: larkm_manager.admin_settings
+  description: 'Confgure larkm Manager settings.'
+
