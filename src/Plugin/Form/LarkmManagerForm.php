@@ -8,7 +8,7 @@ use \Drupal\Core\Url;
 use \Drupal\Core\Link;
 
 /**
- * Admin settings form.
+ * "Home" form for the larkm Manager module.
  */
 class LarkmManagerForm extends FormBase {
 
@@ -31,6 +31,8 @@ class LarkmManagerForm extends FormBase {
     ];    
     $form['larkm_query'] = [
       '#type' => 'textfield',
+      '#size' => 100,
+      '#maxlength' => 100,
       '#description' => $this->t('Search for ARKs.'),
     ];
     $form['search_arks'] = [
@@ -52,10 +54,6 @@ class LarkmManagerForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // foreach ($form_state->getValues() as $key => $value) {
-      // \Drupal::messenger()->addMessage($key . ': ' . $value);
-    // }
-
     $larkm_utils = \Drupal::service('larkm_manager.larkm_utils');
     $arks = $larkm_utils->searchLarkm($form_state->getValue('larkm_query')); 
     $arks = json_decode($arks, TRUE);
