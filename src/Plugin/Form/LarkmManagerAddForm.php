@@ -21,14 +21,6 @@ class LarkmManagerAddForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['larkm_add_identifier'] = [
-      '#title' => $this->t('Identifier'),
-      '#type' => 'textfield',
-      '#size' => 100,
-      '#maxlength' => 200,
-      '#description' => $this->t('A v4 UUID. Leave empty to have larkm generate one.'),
-    ];
-
     $larkm_utils = \Drupal::service('larkm_manager.larkm_utils');
     $larkm_config = $larkm_utils->getConfig();
     $shoulders = $larkm_config['allowed_shoulders'];
@@ -45,59 +37,69 @@ class LarkmManagerAddForm extends FormBase {
       '#options' => $shoulder_options,
       '#description' => $this->t('The ARK shoulder.'),
     ];
-
-    $form['larkm_add_target'] = [
-      '#title' => $this->t('Target'),
+    $form['larkm_add_identifier'] = [
+      '#title' => $this->t('Identifier'),
       '#type' => 'textfield',
       '#size' => 100,
       '#maxlength' => 200,
-      '#required' => TRUE,
-      '#description' => $this->t('The URL this ARK should resolve to.'),
+      '#description' => $this->t('A v4 UUID. Leave empty to have larkm generate one.'),
+    ];
+    $form['larkm_add_target'] = [
+      '#title' => $this->t('Target'),
+      '#type' => 'textarea',
+      '#maxlength' => 1000,
+      '#rows' => 3,
+      '#resizable' => TRUE,
+      '#description' => $this->t('The URL this ARK should resolve to. If left empty, will default to value of "Where".'),
     ];
     $form['larkm_add_erc_what'] = [
       '#title' => $this->t('What'),
-      '#type' => 'textfield',
-      '#size' => 100,
-      '#maxlength' => 200,
+      '#type' => 'textarea',
+      '#maxlength' => 1000,
+      '#rows' => 3,
+      '#resizable' => TRUE,
       '#description' => $this->t('erc_what value.'),
     ];
     $form['larkm_add_erc_who'] = [
       '#title' => $this->t('Who'),
-      '#type' => 'textfield',
-      '#size' => 100,
-      '#maxlength' => 200,
+      '#type' => 'textarea',
+      '#maxlength' => 1000,
+      '#rows' => 3,
+      '#resizable' => TRUE,
       '#description' => $this->t('erc_who value.'),
     ];
     $form['larkm_add_erc_when'] = [
       '#title' => $this->t('When'),
-      '#type' => 'textfield',
-      '#size' => 100,
-      '#maxlength' => 200,
+      '#type' => 'textarea',
+      '#maxlength' => 1000,
+      '#rows' => 3,
+      '#resizable' => TRUE,
       '#description' => $this->t('erc_when value.'),
     ];
     $form['larkm_add_erc_where'] = [
       '#title' => $this->t('Where'),
-      '#type' => 'textfield',
-      '#size' => 100,
-      '#maxlength' => 200,
-      '#description' => $this->t('erc_where value. If left empty, will default to value of "Target".'),
+      '#type' => 'textarea',
+      '#maxlength' => 1000,
+      '#rows' => 3,
+      '#resizable' => TRUE,
+      '#required' => TRUE,
+      '#description' => $this->t('erc_where value.'),
     ];
     $form['larkm_add_policy'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Policy'),
-      '#rows' => 5,
-      '#cols' => 100,
-      '#maxlength' => 500,
+      '#rows' => 3,
+      '#resizable' => TRUE,
+      '#maxlength' => 1000,
       '#description' => $this->t('The committment policy.'),
     ];
     $form['larkm_add_submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Add ARK'),
-      '#description' => $this->t('Note: If a field is left empty, it will be assigned a default value.'),
     ];
     $form['larkm_add_help'] = [
       '#type' => 'item',
-      '#markup' => $this->t('Note: If a field other than "Target" is left empty, it will be assigned a default value.'),
+      '#markup' => $this->t('Note: If a field other than "Target" is left empty, it will be assigned a default value of ":at".'),
     ];    
 
     return $form;
