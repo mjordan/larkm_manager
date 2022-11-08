@@ -46,6 +46,7 @@ class LarkmManagerEditForm extends FormBase {
       '#title' => t('Local resolver URL'),
       '#markup' => rtrim($resolver_hosts['local'], '/') . '/' . $response['arks'][0]['ark_string'],
     ];
+    /*
     $form['larkm_edit_target'] = [
       '#title' => $this->t('Target'),
       '#type' => 'textarea',
@@ -55,6 +56,7 @@ class LarkmManagerEditForm extends FormBase {
       '#default_value' => $response['arks'][0]['target'],
       '#description' => $this->t('The URL this ARK should resolve to. If left empty, will default to value of "Where".'),
     ];
+     */
     $form['larkm_edit_erc_what'] = [
       '#title' => $this->t('What'),
       '#type' => 'textarea',
@@ -81,14 +83,21 @@ class LarkmManagerEditForm extends FormBase {
       '#resizable' => TRUE,
       '#default_value' => $response['arks'][0]['erc_when'],
       '#description' => $this->t('erc_when value.'),
-    ];
+   ];
+   if (preg_match('/^[a-zA-Z]\:[\/,\\\\].{1,}/', $response['arks'][0]['erc_where'])) {
+       $erc_where = "NOTICE: This value appears to be a Windows absolute path and is invalid as an 'erc_where' value: " . $response['arks'][0]['erc_where'];
+   }
+   else {
+       $erc_where = $response['arks'][0]['erc_where'];
+   }
    $form['larkm_edit_erc_where'] = [
       '#title' => $this->t('Where'),
       '#type' => 'textarea',
       '#maxlength' => 1000,
       '#rows' => 3,
       '#resizable' => TRUE,
-      '#default_value' => $response['arks'][0]['erc_where'],
+      // '#default_value' => $response['arks'][0]['erc_where'],
+      '#default_value' => $erc_where,
       '#required' => TRUE,
       '#description' => $this->t('erc_where value.'),
     ];

@@ -122,4 +122,18 @@ class LarkmManagerAddForm extends FormBase {
     }
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    // Check for Windows absolute paths, e.g. c:\some\path, which aren't allowed.
+    if (preg_match('/^[a-zA-Z]\:[\/,\\\\].{1,}/', $form_state->getValue('larkm_add_erc_where'))) {
+      $form_state->setErrorByName(
+        'larkm_add_erc_where',
+	$this->t('@path appears to be a Windows path, which is not a valid erc_where value since it could be on any computer .',
+	['@path' => ($form_state->getValue('larkm_add_erc_where'))])
+      );
+    }
+  }
+
 }
