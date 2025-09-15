@@ -1,5 +1,0 @@
-name: 'larkm Manager'
-description: "Provides a management UI for a larkm ARK resolver."
-type: module
-core: 8.x
-core_version_requirement: ^8 || ^9

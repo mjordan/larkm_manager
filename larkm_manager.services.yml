@@ -1,3 +1,0 @@
-services:
-  larkm_manager.larkm_utils:
-    class: Drupal\larkm_manager\Larkm\LarkmUtils
