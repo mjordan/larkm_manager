@@ -1,16 +1,18 @@
 """Management front end for larkm."""
 
 import configparser
+import os
 import json
 import requests
 import streamlit as st
 
 # Read config file. This is not a Streamlit configuration file as described
-# at https://docs.streamlit.io/develop/concepts/configuration/options, it's
+# at https://docs.streamlit.io/develop/concepts/configuration/options, it is
 # specific to this application.
+config_file_path = os.getenv("LARKM_MANAGER_CONFIG_FILE_PATH") or "config.cfg"
 config = configparser.ConfigParser()
 config.sections()
-config.read("config.cfg")
+config.read(config_file_path)
 show_state_debug_info = config.getboolean("debug", "show_session_data")
 verify_ssl_certs = config.getboolean("ssl", "verify_ssl_certs")
 if verify_ssl_certs is False:
