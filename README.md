@@ -1,4 +1,4 @@
-A very basic GUI for the [larkm](https://github.com/mjordan/larkm) ARK mananager/resolver that allows creating, editing, and deleting ARKs.
+A very basic GUI for the [larkm](https://github.com/mjordan/larkm) ARK manager/resolver that allows creating, editing, and deleting ARKs.
 
 ## Installation
 
