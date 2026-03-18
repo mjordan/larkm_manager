@@ -26,7 +26,7 @@ def get_larkm_config():
     """Returns a dict containing the larkm configuration."""
     headers = {"Authorization": config["larkm_host"]["api_key"]}
     result = requests.get(
-        f'{config["larkm_host"]["host"]}/larkm/config',
+        f'{config["larkm_host"]["host"]}/larkm/config/{config["arks"]["naan"]}',
         verify=verify_ssl_certs,
         headers=headers,
     )
@@ -70,6 +70,7 @@ def create_ark():
     # Callback to create the ARK.
 
     payload = {
+        "naan": config["arks"]["naan"],
         "shoulder": st.session_state.shoulder,
         "target": st.session_state.ark_target_create,
         "who": st.session_state.erc_who_create,
@@ -127,7 +128,7 @@ def update_ark():
     }
     url = st.session_state.ark_url.replace("/ark:", "/larkm/ark:")
 
-    result = requests.put(
+    result = requests.patch(
         url,
         headers=headers,
         verify=verify_ssl_certs,
@@ -136,7 +137,7 @@ def update_ark():
     if result.status_code == 200:
         st.success(f"ARK {ark_body['ark_string']} successfully updated!")
     else:
-        st.error(f"PUT (update ARK) request status code is {result.status_code}.")
+        st.error(f"PATCH (update ARK) request status code is {result.status_code}.")
 
 
 def delete_ark():
@@ -160,6 +161,10 @@ def delete_ark():
         st.success(f"ARK {st.session_state.ark_url} successfully deleted!")
     else:
         st.error(f"DELETE request status code is {result.status_code}.")
+
+
+def get_connected_to_larkm_message():
+    st.info(f"Connected to larkm at {config['larkm_host']['host'].lstrip('https://')}")
 
 
 ### Main program. ###
@@ -186,7 +191,7 @@ def create_page():
     with st.form("create_ark"):
         larkm_config = get_larkm_config()
         st.text_input(
-            "Target (required)",
+            "Target",
             help='The full https:// URL to the resource. In other words, the URL that the ARK is the "persistent URL" for.',
             key="ark_target_create",
         )
@@ -198,7 +203,7 @@ def create_page():
         st.selectbox(
             "Shoulder",
             list(larkm_config["allowed_shoulders"]),
-            help=f'Do not change the default shoulder value unless you have consulted the [docs]({config["documentation"]["url"]}).',
+            help="Do not change the default shoulder value unless you have consulted the documentation.",
             key="shoulder",
         )
         st.text_input("What", help="The title of the resource.", key="erc_what_create")
@@ -223,7 +228,7 @@ def update_page():
             'Enter the ARK (starting with "ark:"), or the full larkm ARK URL.',
             key="ark_url",
         )
-        st.form_submit_button("Get ARK data", on_click=get_ark)
+        st.form_submit_button("Get ARK", on_click=get_ark)
 
     if len(st.session_state.ark_url) > 0:
         with st.form("update_ark"):
@@ -249,9 +254,9 @@ def delete_page():
 
 
 pages = {
-    "Create an ARK": [st.Page(create_page, title="Create an ARK")],
-    "Update an ARK": [st.Page(update_page, title="Update an ARK")],
-    "Delete an ARK": [st.Page(delete_page, title="Delete an ARK")],
+    "Create": [st.Page(create_page, title="Create an ARK")],
+    "Update": [st.Page(update_page, title="Update an ARK")],
+    "Delete": [st.Page(delete_page, title="Delete an ARK")],
 }
 
 
@@ -259,6 +264,6 @@ if show_state_debug_info is True:
     with st.expander("Current session state at top of forms, for debugging"):
         st.write(st.session_state)
 
-
+get_connected_to_larkm_message()
 pg = st.navigation(pages)
 pg.run()

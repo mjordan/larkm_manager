@@ -1,0 +1,12 @@
+[tool.setuptools.packages.find]
+namespaces = false
+
+[project]
+name = "larkm Manager"
+version = "1.0.0"
+description = "A simple GUI for larkm."
+requires-python = ">=3.10"
+dependencies = [
+    "requests",
+    "streamlit",
+]
