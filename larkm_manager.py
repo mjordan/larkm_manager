@@ -251,6 +251,7 @@ def delete_page():
             key="ark_url",
         )
         st.form_submit_button("Delete ARK", on_click=delete_ark)
+        st.write("Note: you will not be prompted to confirm you are deleting the ARK.")
 
 
 pages = {
