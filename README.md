@@ -1,4 +1,4 @@
-A very basic GUI for the [larkm](https://github.com/mjordan/larkm) ARK manager/resolver that allows creating, editing, and deleting ARKs. larkm Manager uses the [Streamlit](https://streamlit.io/) GUI application framework.
+A very basic GUI for the [larkm](https://github.com/mjordan/larkm) ARK manager/resolver that allows creating, editing, and deleting ARKs. larkm Manager uses the [Streamlit](https://streamlit.io/) application framework.
 
 ## Installation
 
