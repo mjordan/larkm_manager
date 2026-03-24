@@ -1,4 +1,4 @@
-A very basic GUI for the [larkm](https://github.com/mjordan/larkm) ARK manager/resolver that allows creating, editing, and deleting ARKs.
+A very basic GUI for the [larkm](https://github.com/mjordan/larkm) ARK manager/resolver that allows creating, editing, and deleting ARKs. larkm Manager uses the [Streamlit](https://streamlit.io/) GUI application framework.
 
 ## Installation
 
@@ -14,7 +14,11 @@ To fire up larkm Manager, within the `larkm_manager` directory run:
 
 `streamlit run larkm_manager.py`
 
-You will be directed to the larkm Manager tab in your browser, where you will be able to create, edit, and delete ARKs.
+By default, Streamlit runs on port 8051. If you want to specify a port to run larkm Manager on, use the `--server.port` argument when you run larkm Manager, e.g.:
+
+`streamlit run larkm_manager.py --server.port 8080`
+
+Regardless of what port it's running on, when you execute Streamlit, you will be directed to the larkm Manager tab in your browser, where you will be able to create, edit, and delete ARKs.
 
 ## License
 

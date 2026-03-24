@@ -35,6 +35,10 @@ def get_larkm_config():
     return json.loads(result.text)
 
 
+def get_connected_to_larkm_message():
+    st.info(f"Connected to larkm at {config['larkm_host']['host'].lstrip('https://')}")
+
+
 def get_ark_data(ark_url):
     """Fetch an ARK's data."""
 
@@ -172,10 +176,6 @@ def delete_ark():
         st.error(f"DELETE request status code is {result.status_code}.")
 
 
-def get_connected_to_larkm_message():
-    st.info(f"Connected to larkm at {config['larkm_host']['host'].lstrip('https://')}")
-
-
 def create_page():
     """Render the create ARK form."""
 
@@ -289,11 +289,9 @@ def delete_page():
 # Main program. #
 #################
 
-larkm_config = get_larkm_config()
-
-# Ping larkm.
+# Get larkm's configuration.
 try:
-    get_larkm_config()
+    larkm_config = get_larkm_config()
 except Exception as e:
     st.error(f"Can't connect to {config['larkm_host']['host']}.")
     with st.expander("Details"):
