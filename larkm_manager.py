@@ -19,7 +19,9 @@ if verify_ssl_certs is False:
     requests.packages.urllib3.disable_warnings()
 
 
-### Functions. ###
+##############
+# Functions. #
+##############
 
 
 def get_larkm_config():
@@ -34,6 +36,8 @@ def get_larkm_config():
 
 
 def get_ark_data(ark_url):
+    """Fetch an ARK's data."""
+
     url = ark_url.replace("/ark:", "/larkm/ark:")
     result = requests.get(
         f"{url}",
@@ -45,7 +49,7 @@ def get_ark_data(ark_url):
 
 
 def get_ark():
-    # Callback for the get_ark_data form submit.
+    """Callback for the get_ark_data form submit."""
 
     if st.session_state.ark_url.startswith("/"):
         st.session_state.ark_url = (
@@ -67,7 +71,7 @@ def get_ark():
 
 
 def create_ark():
-    # Callback to create the ARK.
+    """Callback to create the ARK using values from the form."""
 
     payload = {
         "naan": config["arks"]["naan"],
@@ -79,6 +83,8 @@ def create_ark():
     }
     if len(st.session_state.identifier_create) > 0:
         payload["identifier"] = st.session_state.identifier_create
+    if larkm_config["constrain_commitment_statements"] == "no":
+        payload["policy"] = st.session_state.policy_create
 
     headers = {
         "content-type": "application/json",
@@ -100,6 +106,7 @@ def create_ark():
         st.write(f'**What**: {ark["ark"]["what"]}')
         st.write(f'**Who**: {ark["ark"]["who"]}')
         st.write(f'**When**: {ark["ark"]["when"]}')
+        st.write(f'**Policy**: {ark["ark"]["policy"]}')
         st.write(
             f'**ARK URL** (suitable for sharing as a persistent URL): {config["larkm_host"]["host"].rstrip("/")}/{ark["ark"]["ark_string"]}'
         )
@@ -121,6 +128,8 @@ def update_ark():
         "what": st.session_state.erc_what_update,
         "when": st.session_state.erc_when_update,
     }
+    if larkm_config["constrain_commitment_statements"] == "no":
+        payload["policy"] = st.session_state.policy_update
 
     headers = {
         "content-type": "application/json",
@@ -167,29 +176,18 @@ def get_connected_to_larkm_message():
     st.info(f"Connected to larkm at {config['larkm_host']['host'].lstrip('https://')}")
 
 
-### Main program. ###
-
-# Ping larkm.
-try:
-    get_larkm_config()
-except Exception as e:
-    st.error(f"Can't connect to {config['larkm_host']['host']}.")
-    with st.expander("Details"):
-        st.write(str(e))
-    st.stop()
-
-
 def create_page():
-    # Render the create ARK form.
+    """Render the create ARK form."""
 
     st.session_state.identifier_create = ""
     st.session_state.ark_target_create = ""
     st.session_state.erc_who_create = ""
     st.session_state.erc_what_create = ""
     st.session_state.erc_when_create = ""
+    if larkm_config["constrain_commitment_statements"] == "no":
+        st.session_state.policy_create = ""
 
     with st.form("create_ark"):
-        larkm_config = get_larkm_config()
         st.text_input(
             "Target",
             help='The full https:// URL to the resource. In other words, the URL that the ARK is the "persistent URL" for.',
@@ -217,11 +215,17 @@ def create_page():
             help="One or more dates associated with the resource. Free text.",
             key="erc_when_create",
         )
+        if larkm_config["constrain_commitment_statements"] == "no":
+            st.text_input(
+                "Policy (commitment statement)",
+                help="A statement indicating our commitment to maintain access to the resource. Free text.",
+                key="policy_create",
+            )
         st.form_submit_button("Create ARK", on_click=create_ark)
 
 
 def update_page():
-    # Render the update ARK form.
+    """Render the update ARK form."""
 
     with st.form("get_ark_data"):
         st.text_input(
@@ -235,15 +239,42 @@ def update_page():
             ark_data = json.loads(st.session_state.ark_body)
             st.text(f'ARK: {ark_data["ark_string"]}')
             st.text(f"ARK URL: {st.session_state.ark_url}")
-            st.text_input("Target", value=ark_data["target"], key="ark_target_update")
-            st.text_input("What", value=ark_data["erc_what"], key="erc_what_update")
-            st.text_input("Who", value=ark_data["erc_who"], key="erc_who_update")
-            st.text_input("When", value=ark_data["erc_when"], key="erc_when_update")
+            st.text_input(
+                "Target",
+                value=ark_data["target"],
+                help='The full https:// URL to the resource. In other words, the URL that the ARK is the "persistent URL" for.',
+                key="ark_target_update",
+            )
+            st.text_input(
+                "What",
+                value=ark_data["erc_what"],
+                help="The title of the resource.",
+                key="erc_what_update",
+            )
+            st.text_input(
+                "Who",
+                value=ark_data["erc_who"],
+                help="A brief description of the creator of the resource. Free text.",
+                key="erc_who_update",
+            )
+            st.text_input(
+                "When",
+                value=ark_data["erc_when"],
+                help="One or more dates associated with the resource. Free text.",
+                key="erc_when_update",
+            )
+            if larkm_config["constrain_commitment_statements"] == "no":
+                st.text_input(
+                    "Policy",
+                    value=ark_data["policy"],
+                    help="A statement indicating our commitment to maintain access to the resource. Free text.",
+                    key="policy_update",
+                )
             st.form_submit_button("Update ARK", on_click=update_ark)
 
 
 def delete_page():
-    # Render the delete ARK form.
+    """Render the delete ARK form."""
 
     with st.form("delete_ark"):
         st.text_input(
@@ -254,12 +285,26 @@ def delete_page():
         st.write("Note: you will not be prompted to confirm you are deleting the ARK.")
 
 
+#################
+# Main program. #
+#################
+
+larkm_config = get_larkm_config()
+
+# Ping larkm.
+try:
+    get_larkm_config()
+except Exception as e:
+    st.error(f"Can't connect to {config['larkm_host']['host']}.")
+    with st.expander("Details"):
+        st.write(str(e))
+    st.stop()
+
 pages = {
     "Create": [st.Page(create_page, title="Create an ARK")],
     "Update": [st.Page(update_page, title="Update an ARK")],
     "Delete": [st.Page(delete_page, title="Delete an ARK")],
 }
-
 
 if show_state_debug_info is True:
     with st.expander("Current session state at top of forms, for debugging"):

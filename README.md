@@ -10,10 +10,12 @@ First, edit the configuration file, config.cfg, to point to your instance of lar
 
 If you want to locate your configuration file outside the larkm Manager directory, define the absolute path to the configuration file in your computer's `LARKM_MANAGER_CONFIG_FILE_PATH` environment variable.
 
-To fire up larkm Manager, within the `larkm_manager` directory run `streamlit run larkm_manager.py`. You will be directed to the larkm Manager tab in your browser, where you will be able to create, edit, and delete ARKs.
+To fire up larkm Manager, within the `larkm_manager` directory run:
+
+`streamlit run larkm_manager.py`
+
+You will be directed to the larkm Manager tab in your browser, where you will be able to create, edit, and delete ARKs.
 
 ## License
 
 MIT
-
-
